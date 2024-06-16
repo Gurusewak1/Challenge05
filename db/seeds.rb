@@ -7,3 +7,20 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+# db/seeds.rb
+require 'faker'
+
+# Clear existing data
+Product.delete_all
+
+# Create 676 products with random data
+676.times do
+  Product.create(
+    title: Faker::Commerce.product_name,
+    description: Faker::Lorem.paragraph,  # Assuming you still want to include a description
+    price: Faker::Commerce.price(range: 0.0..100.0),
+    stock_quantity: Faker::Number.between(from: 1, to: 100)
+  )
+end
+
+puts "676 products have been created."
