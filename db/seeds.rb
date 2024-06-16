@@ -7,20 +7,29 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-# db/seeds.rb
-require 'faker'
+require 'csv'
 
 # Clear existing data
-Product.delete_all
+Product.destroy_all
+Category.destroy_all
 
-# Create 676 products with random data
-676.times do
-  Product.create(
-    title: Faker::Commerce.product_name,
-    description: Faker::Lorem.paragraph,  # Assuming you still want to include a description
-    price: Faker::Commerce.price(range: 0.0..100.0),
-    stock_quantity: Faker::Number.between(from: 1, to: 100)
+# Read products from CSV and create records
+csv_file = Rails.root.join('db', 'products.csv')
+csv_data = File.read(csv_file)
+
+products = CSV.parse(csv_data, headers: true)
+
+products.each do |product|
+  category_name = product['category']
+  category = Category.find_or_create_by(name: category_name)
+
+  Product.create!(
+    title: product['name'],
+    description: product['description'],
+    price: product['price'],
+    stock_quantity: product['stock quantity'],
+    category: category
   )
 end
 
-puts "676 products have been created."
+puts "Seed data loaded successfully."
